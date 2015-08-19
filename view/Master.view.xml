@@ -1,0 +1,253 @@
+<core:View xmlns:core="sap.ui.core" 
+
+
+
+	xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:table="sap.ui.table"
+
+
+
+	controllerName="test05.view.Master">
+
+
+
+
+
+
+
+	<Page id="productListPage" title="{i18n>masterTitle}" showNavButton="true" navButtonPress="onNavBack" >
+
+
+
+	    <headerContent>
+
+
+
+            <Image xmlns="sap.m"
+
+
+
+        		id="bitMymImage"
+
+
+
+        		src="http://www.bit-consulting.com/sites/default/files/bilder/bit-consulting-logo-myMEDISET.png"/>
+
+
+
+        </headerContent>
+
+
+
+		<content>
+
+
+
+			<Table id="catalogTable" class="navTableControlLayout" 
+
+
+
+				items="{/DevicesSet}"			 
+
+
+
+				growing="true" growingScrollToLoad="true">			
+
+
+
+				<headerToolbar id ="catalogTable_headerToolbar">
+
+
+
+					<Toolbar id="tableToolbar">
+
+
+
+						<Label id="catalogTitle" text="{viewProperties>/catalogTitleText}" class="sapMH4FontSize" visible="{viewProperties>/catalogTitleVisible}" />
+
+
+
+						<ToolbarSpacer id="toolbarSpacer" />
+
+
+
+						<SearchField id="searchField" showRefreshButton="false"  placeholder="{i18n>masterSearchPlaceholder}"
+
+
+
+						tooltip="{i18n>masterSearchTooltip}"	search="onSearchPressed" width="{viewProperties>/searchFieldWidth}" />
+
+
+
+					</Toolbar>
+
+
+
+				</headerToolbar>
+
+
+
+				<columns id ="catalogTable_columns">
+
+
+
+					<Column id="catalogTable_col1" width="{viewProperties>/availabilityColumnWidth}" hAlign="Left">
+
+
+
+						<header id="catalogTable_col1_header" > 
+
+
+
+							<Label id="catalogTable_col1_label" text="Device ID" />	
+
+
+
+						</header>
+
+
+
+					</Column>				
+
+
+
+					
+
+
+
+					<Column id="catalogTable_col2" width="{viewProperties>/availabilityColumnWidth}" hAlign="Center">
+
+
+
+						<header id="catalogTable_col2_header"> 
+
+
+
+							<Label id="catalogTable_col2_label"  text="Name of Device" />						
+
+
+
+						</header>
+
+
+
+					</Column>
+
+
+
+					
+
+
+
+					<Column id="catalogTable_col3" width="{viewProperties>/availabilityColumnWidth}" hAlign="Right">
+
+
+
+						<header id="catalogTable_col3_header"> 
+
+
+
+							<Label id="catalogTable_col3_label"  text="Device Status" />						
+
+
+
+						</header>
+
+
+
+					</Column>
+
+
+
+				</columns>
+
+
+
+
+
+
+
+				<ColumnListItem id="columnListItem" vAlign="Middle" type="Navigation"
+
+
+
+					press="onLineItemPressed" class="navTableItemLayout">
+
+
+
+					<cells id="columnListItem_cells"> 
+
+
+
+						<Text id="columnListItem_cell_1" text="{DevId}" maxLines="2" >
+
+
+
+                        </Text>
+
+
+
+						<ObjectStatus id="columnListItem_cell_2" text="{Name}" state="None" >						
+
+
+
+						</ObjectStatus>		
+
+
+
+						<ObjectStatus id="columnListItem_cell_3"
+
+
+
+						icon="{ path: 'DevStatus', 
+
+
+
+						        formatter: '.getDeviceStatusIcon' }" 
+
+
+
+						state="{
+
+
+
+						    path:   'DevStatus',
+
+
+
+						    formatter: '.getDeviceStatusState' }">
+
+
+
+						</ObjectStatus>	
+
+
+
+					</cells>
+
+
+
+				</ColumnListItem>
+
+
+
+			</Table>
+
+
+
+		</content>
+
+
+
+		<footer>
+
+
+
+		</footer>
+
+
+
+	</Page>
+
+
+
+</core:View>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema Namespace="/BITMYM/RFID_SRV_SRV" sap:schema-version="1 " xml:lang="en" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+			<EntityType Name="Devices" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="DevId"/>
+				</Key>
+				<Property MaxLength="20" Name="DevId" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Device ID"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="40" Name="Name" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Name of Device"
+					sap:sortable="false" sap:updatable="false"/>
+			</EntityType>
+			<EntityType Name="TempTagUID" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="TagUid"/>
+				</Key>
+				<Property MaxLength="22" Name="TagUid" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false"
+					sap:label="RFID - Tag Unique ID" sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="20" Name="DevId" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Device ID"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="50" Name="Sessid" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Session ID"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property Name="Erdat" Nullable="false" Precision="7" Type="Edm.DateTime" sap:creatable="false" sap:filterable="false" sap:label="Created on"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property Name="Erzeit" Nullable="false" Precision="0" Type="Edm.Time" sap:creatable="false" sap:filterable="false" sap:label="Created at"
+					sap:sortable="false" sap:updatable="false"/>
+			</EntityType>
+			<EntityType Name="MainTagUID" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="TagUid"/>
+				</Key>
+				<Property MaxLength="22" Name="TagUid" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false"
+					sap:label="RFID - Tag Unique ID" sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="18" Name="Matnr" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Material"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="10" Name="Charg" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Batch"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="18" Name="Sernr" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Serial Number"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property Name="Vfdat" Nullable="false" Precision="7" Type="Edm.DateTime" sap:creatable="false" sap:filterable="false" sap:label="SLED/BBD"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="4" Name="Vkorg" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Sales Org."
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="2" Name="Spart" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Division"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="4" Name="Werks" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Plant"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="4" Name="Lgort" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Stor. Location"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="18" Name="Equnr" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Equipment"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="10" Name="Lresn" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Reservation"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="6" Name="Posnr" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Item"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="8" Name="Stlnr" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Number"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="8" Name="Stlkn" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Item node"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="20" Name="DevId" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Device ID"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="20" Name="PrcId" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="RFID Process ID"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property Name="Erdat" Nullable="false" Precision="7" Type="Edm.DateTime" sap:creatable="false" sap:filterable="false" sap:label="Created on"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property Name="Erzeit" Nullable="false" Precision="0" Type="Edm.Time" sap:creatable="false" sap:filterable="false" sap:label="Created at"
+					sap:sortable="false" sap:updatable="false"/>
+				<Property MaxLength="1" Name="Status" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false"
+					sap:label="RFID Tag UID Status" sap:sortable="false" sap:updatable="false"/>
+			</EntityType>
+			<EntityContainer Name="/BITMYM/RFID_SRV_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+				<EntitySet EntityType="/BITMYM/RFID_SRV_SRV.Devices" Name="DevicesSet" sap:content-version="1" sap:creatable="false" sap:deletable="false"
+					sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="/BITMYM/RFID_SRV_SRV.TempTagUID" Name="TempTagUIDSet" sap:content-version="1" sap:creatable="false" sap:deletable="false"
+					sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="/BITMYM/RFID_SRV_SRV.MainTagUID" Name="MainTagUIDSet" sap:content-version="1" sap:creatable="false" sap:deletable="false"
+					sap:pageable="false" sap:updatable="false"/>
+			</EntityContainer>
+			<atom:link href="http://localhost:8080/webidedispatcher/destinations/XBA/sap/opu/odata/bitmym/RFID_SRV_SRV/$metadata" rel="self"
+				xmlns:atom="http://www.w3.org/2005/Atom"/>
+			<atom:link href="http://localhost:8080/webidedispatcher/destinations/XBA/sap/opu/odata/bitmym/RFID_SRV_SRV/$metadata" rel="latest-version"
+				xmlns:atom="http://www.w3.org/2005/Atom"/>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,64 @@
+{
+  "run": [
+    {
+      "filePath": "/com.bit-consulting.mym.rfid.loanerdispatch/index.html",
+      "previewMode": 0,
+      "dataMode": 1,
+      "workspace": "withoutWorkspace",
+      "ui5ActiveVersion": null,
+      "ui5VerSource": null,
+      "isDefaultVersion": 0,
+      "urlParameters": [],
+      "_metadata": {
+        "runnerId": "webapprunner",
+        "id": 1993737,
+        "displayName": "New Web Application"
+      }
+    },
+    {
+      "filePath": "/com.bit-consulting.mym.rfid.loanerdispatch/Component.js",
+      "previewMode": 0,
+      "dataMode": 1,
+      "workspace": "withoutWorkspace",
+      "ui5ActiveVersion": null,
+      "ui5VerSource": null,
+      "isDefaultVersion": 0,
+      "urlParameters": [],
+      "_metadata": {
+        "runnerId": "fiorirunner",
+        "id": 4578981,
+        "displayName": "New SAP Fiori Component on Sandbox 1"
+      }
+    },
+    {
+      "filePath": "/test05/index.html",
+      "previewMode": 0,
+      "dataMode": 1,
+      "workspace": "withoutWorkspace",
+      "ui5ActiveVersion": null,
+      "ui5VerSource": null,
+      "isDefaultVersion": 0,
+      "urlParameters": [],
+      "_metadata": {
+        "runnerId": "webapprunner",
+        "id": 8128232,
+        "displayName": "New Web Application 5"
+      }
+    },
+    {
+      "filePath": "/test05/Component.js",
+      "previewMode": 0,
+      "dataMode": 1,
+      "workspace": "withoutWorkspace",
+      "ui5ActiveVersion": null,
+      "ui5VerSource": null,
+      "isDefaultVersion": 0,
+      "urlParameters": [],
+      "_metadata": {
+        "runnerId": "fiorirunner",
+        "id": 6338545,
+        "displayName": "New SAP Fiori Component on Sandbox"
+      }
+    }
+  ]
+}

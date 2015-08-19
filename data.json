@@ -1,0 +1,107 @@
+{
+
+
+
+	"TileCollection": [
+
+
+
+		{
+
+
+
+			"icon": "tag",
+
+
+
+			"title": "Tagging",
+
+
+
+			"info": "Create Tags for Items",
+
+
+
+			 "url": "../ztest05/index.html?sap-client=100"
+
+
+
+        },
+
+
+
+        		{
+
+
+
+			"icon": "add-product",
+
+
+
+			"title": "Loanset Assembly",
+
+
+
+			"info": "Assign tagged Items to a Loanset",
+
+			"url": "../zlset_assembly/index.html?sap-client=100"
+
+
+
+        },
+
+
+
+        		{
+
+
+
+			"icon": "shipping-status",
+
+
+
+			"title": "Dispatch Loanset",
+
+
+
+			"info": "Validate Set before dispatch",
+
+
+
+			"url": "../sap/bc/ui5_ui5/sap/ztest03/index.html?sap-client=100"
+
+
+
+        },
+
+
+
+        		{
+
+
+
+			"icon": "inspection",
+
+
+
+			"title": "Loanset Inspection",
+
+
+
+			"info": "Check returned sets",
+
+
+
+						 "url": "http://www.test.de"
+
+
+
+        } 
+
+
+
+  ]
+
+
+
+}

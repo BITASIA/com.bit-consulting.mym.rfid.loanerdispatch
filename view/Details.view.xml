@@ -1,0 +1,75 @@
+<core:View controllerName="test05.view.Details" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:l="sap.ui.layout" xmlns:ui="sap.ca.ui" xmlns="sap.m">
+	<html:style>
+		.mymTagInput{ margin: 0 auto; text-align: left; width:250px; display: block; } .mymTagInputHead{ padding-top: 10px; } #itemTable{ width:
+		500px }
+	</html:style>
+	<Page id="DetailsPage" navButtonPress="onNavBack" showNavButton="true" title="{i18n>detailTitle}">
+		<headerContent>
+			<Image id="bitMymImage" src="http://www.bit-consulting.com/sites/default/files/bilder/bit-consulting-logo-myMEDISET.png" xmlns="sap.m"/>
+		</headerContent>
+		<content>
+			<!--Extension Point 1-->
+			<core:ExtensionPoint name="extensionAfterObjectHeader"/>
+			<l:VerticalLayout align="center" class="mymTagInput">
+				<l:content>
+					<Label class="mymTagInputHead" text="RFID Device"/>
+					<Input class="mymTagInput" enabled="false" id="deviceId" type="Text" value="{DevId}"></Input>
+					<Label class="mymTagInput" text="Equipment"/>
+					<Input change=".onEquipmentInputChange" class="mymTagInput" id="equipmentInput" placeholder="Equipment ..." type="Text"></Input>
+					<Label class="mymTagInput" text="Delivery"/>
+					<Input change=".onDeliveryInputChange" class="mymTagInput" id="deliveryInput" liveChange="handleLiveChange" placeholder="Delivery ..." type="Text"
+						valueStateText="Material does not exist!"></Input>
+				</l:content>
+				<l:HorizontalLayout>
+				    <Button id="buttonConfirm" icon="sap-icon://decision" press="onConfirm" text="Confirm"/>
+				    <ToolbarSpacer width="49px"/>
+					<Button icon="sap-icon://feed" press="onReRead" text="Reread"/>
+				</l:HorizontalLayout>
+			</l:VerticalLayout>
+			<Table class="navTableControlLayout" id="itemTable" items="{ path: '/AssembleLoansetSet', sorter: 'Uid_Status' }"
+				showNoData="true">
+				<columns>
+					<Column hAlign="Left">
+						<header>    
+							<Text text="Material"/>
+						</header>
+					</Column>
+					<Column>
+						<header>
+							<Text text="Description"/>
+						</header>
+					</Column>
+					<Column hAlign="Center" minScreenWidth="Tablet">
+						<header>
+							<Text text="Batch"/>
+						</header>
+					</Column>
+					<Column hAlign="Right" minScreenWidth="Tablet">
+						<header>
+							<Text text="Serial"/>
+						</header>
+					</Column>
+					<Column hAlign="Right">
+						<header>
+							<Text text="Status"/>
+						</header>
+					</Column>
+				</columns>
+				<ColumnListItem id="colListItems">
+					<cells>
+						<Text id="cellMatnr" text="{Matnr}"/>
+						<Text id="cellMaktx" text="{Maktx}"/>
+						<Text id="cellCharg" text="{Charg}"/>
+						<Text id="cellSernr" text="{Sernr}"/>
+						<ObjectStatus id="cellStatus" icon="{ path:'Uid_Status', formatter: '.getStatusIcon' }" state="{ path:'Uid_Status', formatter: '.getStatusState' }"></ObjectStatus>
+					</cells>
+				</ColumnListItem>
+			</Table>
+			<!--Extension Point 2-->
+			<core:ExtensionPoint name="extensionAfterNavigationTable"/>
+			<core:Fragment fragmentName="test05.view.BusyDialog" type="XML"></core:Fragment>
+		</content>
+		<footer></footer>
+	</Page>
+</core:View>
