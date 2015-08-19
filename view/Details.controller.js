@@ -117,7 +117,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 		var oModel = this.getView().getModel();
         //oModel.setHeaders["Content-Type"] = "application/json";
-		oModel.read("/DispatchSet(Equnr='" + equipment + "',Vbeln='" + delivery + "')", null, null, true);
+		oModel.read("/DispatchSet(Equnr='" + equipment + "',Vbeln='" + delivery + "',Posnr='')", null, null, true);
 
 		oModel.attachRequestSent(function() {
 			oDialog.open();
@@ -130,7 +130,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			//resp = oEvent.getParameter("response");
 			//var rText = resp.responseText;
 			//var jsonStr = JSON.parse(rText);
-			var d = oModel.getProperty("/DispatchSet(Equnr='',Vbeln='')");
+			var d = oModel.getProperty("/DispatchSet(Equnr='',Vbeln='',,Posnr='')");
 			if (d.Type) {
 				var mType = d.Type;
 			}

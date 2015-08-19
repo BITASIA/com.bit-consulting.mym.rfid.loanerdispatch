@@ -33,6 +33,6 @@
   },
   "deploy": {
     "destination": "XBA",
-    "name": "ZTEST05"
+    "name": "ZLSET_DISPATCH"
   }
 }
