@@ -36,10 +36,24 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			icon = "status-error";
 		} else if (fval === "S") {
 			icon = "status-completed";
+		} else if (fval === "W") {
+			icon = "status-in-process";
 		} else if (fval === "X") {
 			icon = "decline";
 		}
 		return "sap-icon://" + icon;
+	},
+
+	getIconStatus: function(fval) {
+		var state = "Error";
+		if (fval === "" || fval === "E") {
+			state = "Error";
+		} else if (fval === "S") {
+			state = "Success";
+		} else if (fval === "X") {
+			state = "Error";
+		}
+		return "E(1),S(2)";
 	},
 
 	getStatusState: function(fval) {
@@ -48,6 +62,8 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			state = "Error";
 		} else if (fval === "S") {
 			state = "Success";
+		} else if (fval === "W") {
+			state = "Warning";
 		} else if (fval === "X") {
 			state = "Error";
 		}
@@ -78,20 +94,39 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		oEntry.DevId = device;
 		//oEntry.JsonData = JSON.stringify(oModel.oData);
 
-		oModel.create("/AssembleLoansetSet", oEntry, null, null, null);
+		oModel.create("/DispatchSet", oEntry, null, null, null);
 
 		oModel.attachRequestSent(function() {
 			oDialog.open();
 			oModel.mEventRegistry.requestSent = [];
 		});
 
-		oModel.attachRequestCompleted(function() {
+		oModel.attachRequestCompleted(function(oEvent) {
 			oDialog.close();
 			me._clearFlag = "X";
-			me.clearAllInputs(me);
+
 			oModel.mEventRegistry.requestCompleted = [];
 			oModel.mEventRegistry.requestFailed = [];
-			//oEvent.preventDefault();
+
+			var resp = oEvent.getParameter("response");
+			var rText = resp.responseText.replace(/[^{]*/i, '');
+			var t = rText.split("--");
+			var pt = t[0];
+			var jsonStr = JSON.parse(pt);
+
+			var oInput = {};
+			oInput.title = 'Scan Successful';
+
+			oInput.text = jsonStr.d.Message;
+
+			if (jsonStr.d.Type === "E") {
+				oInput.state = 'Error';
+			} else {
+			    me.clearAllInputs(me);
+				oInput.state = 'Success';
+			}
+
+			me.showSuccessDialog(oInput);
 		});
 		oModel.attachRequestFailed(function() {
 			oDialog.close();
@@ -116,7 +151,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		var me = this;
 
 		var oModel = this.getView().getModel();
-        //oModel.setHeaders["Content-Type"] = "application/json";
+		//oModel.setHeaders["Content-Type"] = "application/json";
 		oModel.read("/DispatchSet(Equnr='" + equipment + "',Vbeln='" + delivery + "',Posnr='')", null, null, true);
 
 		oModel.attachRequestSent(function() {
@@ -130,7 +165,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			//resp = oEvent.getParameter("response");
 			//var rText = resp.responseText;
 			//var jsonStr = JSON.parse(rText);
-			var d = oModel.getProperty("/DispatchSet(Equnr='',Vbeln='',,Posnr='')");
+			var d = oModel.getProperty("/DispatchSet(Equnr='',Vbeln='',Posnr='000000')");
 			if (d.Type) {
 				var mType = d.Type;
 			}
@@ -203,8 +238,8 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 				clearInterval(me._tagLookup);
 				console.log("ClearInterval_Main");
 			}
+			//clearInterval(this._tagLookup);
 		}, 4000);
-		clearInterval(this._tagLookup);
 	},
 
 	checkAndUpdateTag: function(me) {
@@ -243,7 +278,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			//clearInterval(meThis._tagLookup);
 			var resp = oEvent.getParameter("response");
 			//var rText = resp.responseText;
-			var rText = resp.responseText.replace(/[^{]*/i,'');
+			var rText = resp.responseText.replace(/[^{]*/i, '');
 			var t = rText.split("--");
 			var pt = t[0];
 			var jsonStr = JSON.parse(pt);
@@ -254,7 +289,9 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			meThis._clearIntervalFlag = "";
 			for (var i = 0; i <= results.length; i++) {
 				if (results[i]) {
-					if (results[i].Uid_Status === "E" || results[i].Uid_Status === "") {
+					if (results[i].UidStatus === "E" ||
+						results[i].UidStatus === "W" ||
+						results[i].UidStatus === "") {
 						noErr = "";
 					}
 				} else {
@@ -264,7 +301,11 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			if (noErr === "X" && results.length !== 0) {
 				meThis._clearIntervalFlag = "X";
 				clearInterval(meThis._tagLookup);
-				meThis.showSuccessDialog();
+				var oInput = {};
+				oInput.title = 'Scan Successful';
+				oInput.state = 'Success';
+				oInput.text = 'Proceed to Confirm!';
+				meThis.showSuccessDialog(oInput);
 				console.log("ClearInterval");
 			}
 			//oModel.setData(jsonStr);
@@ -280,13 +321,13 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 	},
 
-	showSuccessDialog: function() {
+	showSuccessDialog: function(oInput) {
 		var dialog = new sap.m.Dialog({
-			title: 'Scan Successful',
+			title: oInput.title, //'Scan Successful',
 			type: 'Message',
-			state: 'Success',
+			state: oInput.state, //'Success',
 			content: new sap.m.Text({
-				text: 'Proceed to Confirm!'
+				text: oInput.text //'Proceed to Confirm!'
 			}),
 			beginButton: new sap.m.Button({
 				text: 'OK',
@@ -329,10 +370,8 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		//this.getView().byId("buttonConfirm").setValueState("None");
 	},
 
-	onPress: function(evt) {
-		var sRef = evt.getSource().data("ref");
-		//sap.m.MessageToast.show(sRef);
-		sap.m.URLHelper.redirect(sRef);
+	onIconPress: function(evt) {
+		sap.m.MessageToast.show("Icon Pressed");
 	},
 
 	_onRoutePatternMatched: function(oEvent) {

@@ -3,6 +3,9 @@
 	<html:style>
 		.mymTagInput{ margin: 0 auto; text-align: left; width:250px; display: block; } .mymTagInputHead{ padding-top: 10px; } #itemTable{ width:
 		500px }
+		.statusButton{
+		    height: 100px;
+		}
 	</html:style>
 	<Page id="DetailsPage" navButtonPress="onNavBack" showNavButton="true" title="{i18n>detailTitle}">
 		<headerContent>
@@ -62,7 +65,13 @@
 						<Text id="cellMaktx" text="{Maktx}"/>
 						<Text id="cellCharg" text="{Charg}"/>
 						<Text id="cellSernr" text="{Sernr}"/>
-						<ObjectStatus id="cellStatus" icon="{ path:'Uid_Status', formatter: '.getStatusIcon' }" state="{ path:'Uid_Status', formatter: '.getStatusState' }"></ObjectStatus>
+						<ObjectStatus xmlns="sap.m"
+							id="listStatus"
+							title="{ path: 'UidStTxt' }"
+							text=""
+							state="{ path:'UidStatus', formatter: '.getStatusState' }"
+							icon="{ path:'UidStatus', formatter: '.getStatusIcon' }">
+						</ObjectStatus>
 					</cells>
 				</ColumnListItem>
 			</Table>
