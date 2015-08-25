@@ -2,7 +2,15 @@
 
 
 
+
+
+
+
 	xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:table="sap.ui.table"
+
+
+
+
 
 
 
@@ -14,7 +22,19 @@
 
 
 
+
+
+
+
+
+
+
+
 	<Page id="productListPage" title="{i18n>masterTitle}" showNavButton="true" navButtonPress="onNavBack" >
+
+
+
+
 
 
 
@@ -22,7 +42,15 @@
 
 
 
+
+
+
+
             <Image xmlns="sap.m"
+
+
+
+
 
 
 
@@ -30,7 +58,15 @@
 
 
 
+
+
+
+
         		src="http://www.bit-consulting.com/sites/default/files/bilder/bit-consulting-logo-myMEDISET.png"/>
+
+
+
+
 
 
 
@@ -38,7 +74,15 @@
 
 
 
+
+
+
+
 		<content>
+
+
+
+
 
 
 
@@ -46,7 +90,15 @@
 
 
 
+
+
+
+
 				items="{/DevicesSet}"			 
+
+
+
+
 
 
 
@@ -54,7 +106,15 @@
 
 
 
+
+
+
+
 				<headerToolbar id ="catalogTable_headerToolbar">
+
+
+
+
 
 
 
@@ -62,7 +122,15 @@
 
 
 
+
+
+
+
 						<Label id="catalogTitle" text="{viewProperties>/catalogTitleText}" class="sapMH4FontSize" visible="{viewProperties>/catalogTitleVisible}" />
+
+
+
+
 
 
 
@@ -70,7 +138,15 @@
 
 
 
+
+
+
+
 						<SearchField id="searchField" showRefreshButton="false"  placeholder="{i18n>masterSearchPlaceholder}"
+
+
+
+
 
 
 
@@ -78,7 +154,15 @@
 
 
 
+
+
+
+
 					</Toolbar>
+
+
+
+
 
 
 
@@ -86,7 +170,15 @@
 
 
 
+
+
+
+
 				<columns id ="catalogTable_columns">
+
+
+
+
 
 
 
@@ -94,7 +186,15 @@
 
 
 
+
+
+
+
 						<header id="catalogTable_col1_header" > 
+
+
+
+
 
 
 
@@ -102,7 +202,15 @@
 
 
 
+
+
+
+
 						</header>
+
+
+
+
 
 
 
@@ -110,7 +218,15 @@
 
 
 
+
+
+
+
 					
+
+
+
+
 
 
 
@@ -118,7 +234,15 @@
 
 
 
+
+
+
+
 						<header id="catalogTable_col2_header"> 
+
+
+
+
 
 
 
@@ -126,11 +250,23 @@
 
 
 
+
+
+
+
 						</header>
 
 
 
+
+
+
+
 					</Column>
+
+
+
+
 
 
 
@@ -138,7 +274,15 @@
 
 
 
+
+
+
+
 					<Column id="catalogTable_col3" width="{viewProperties>/availabilityColumnWidth}" hAlign="Right">
+
+
+
+
 
 
 
@@ -146,7 +290,15 @@
 
 
 
+
+
+
+
 							<Label id="catalogTable_col3_label"  text="Device Status" />						
+
+
+
+
 
 
 
@@ -154,7 +306,15 @@
 
 
 
+
+
+
+
 					</Column>
+
+
+
+
 
 
 
@@ -166,7 +326,19 @@
 
 
 
+
+
+
+
+
+
+
+
 				<ColumnListItem id="columnListItem" vAlign="Middle" type="Navigation"
+
+
+
+
 
 
 
@@ -174,7 +346,15 @@
 
 
 
+
+
+
+
 					<cells id="columnListItem_cells"> 
+
+
+
+
 
 
 
@@ -182,7 +362,15 @@
 
 
 
+
+
+
+
                         </Text>
+
+
+
+
 
 
 
@@ -190,7 +378,15 @@
 
 
 
+
+
+
+
 						</ObjectStatus>		
+
+
+
+
 
 
 
@@ -198,7 +394,15 @@
 
 
 
+
+
+
+
 						icon="{ path: 'DevStatus', 
+
+
+
+
 
 
 
@@ -206,7 +410,15 @@
 
 
 
+
+
+
+
 						state="{
+
+
+
+
 
 
 
@@ -214,7 +426,15 @@
 
 
 
+
+
+
+
 						    formatter: '.getDeviceStatusState' }">
+
+
+
+
 
 
 
@@ -222,7 +442,15 @@
 
 
 
+
+
+
+
 					</cells>
+
+
+
+
 
 
 
@@ -230,7 +458,15 @@
 
 
 
+
+
+
+
 			</Table>
+
+
+
+
 
 
 
@@ -238,7 +474,15 @@
 
 
 
+
+
+
+
 		<footer>
+
+
+
+
 
 
 
@@ -246,7 +490,15 @@
 
 
 
+
+
+
+
 	</Page>
+
+
+
+
 
 
 

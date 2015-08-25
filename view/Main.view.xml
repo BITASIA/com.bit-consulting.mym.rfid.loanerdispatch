@@ -2,7 +2,15 @@
 
 
 
+
+
+
+
            xmlns="sap.m" controllerName="test05.view.Main" displayBlock="true" height="100%">
+
+
+
+
 
 
 
@@ -10,7 +18,15 @@
 
 
 
+
+
+
+
         </App>
+
+
+
+
 
 
 

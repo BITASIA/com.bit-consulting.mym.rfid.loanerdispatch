@@ -6,7 +6,19 @@ sap.ui.controller("test05.view.Main", {
 
 
 
+
+
+
+
+
+
+
+
     onInit : function() {
+
+
+
+
 
 
 
@@ -14,7 +26,15 @@ sap.ui.controller("test05.view.Main", {
 
 
 
+
+
+
+
             this.getView().addStyleClass("sapUiSizeCompact");
+
+
+
+
 
 
 
@@ -22,11 +42,23 @@ sap.ui.controller("test05.view.Main", {
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
 });
+
+
+
+
 
 
 

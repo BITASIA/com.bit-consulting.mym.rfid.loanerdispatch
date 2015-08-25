@@ -2,6 +2,7 @@ jQuery.sap.declare("test05.view.Details");
 jQuery.sap.require("sap.ca.ui.model.type.Date");
 jQuery.sap.require("sap.ui.core.mvc.Controller");
 jQuery.sap.require("sap.ca.ui.model.format.AmountFormat");
+jQuery.sap.require("test05.view.Formatter");
 
 sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 	_oItemTemplate: null,
@@ -77,17 +78,18 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 	onConfirm: function() {
 		var me = this;
-
+        var oModel = this.getView().getModel();
+        
+        this._clearIntervalFlag = "X";
 		clearInterval(this._tagLookup);
-
+        //oModel.clearBatch();
+			
 		var oDialog = this.getView().byId("BusyDialog");
 		var device = this.getView().byId("deviceId").getValue();
 		var delivery = this.getView().byId("deliveryInput").getValue();
 		var equipment = this.getView().byId("equipmentInput").getValue();
 
 		var oEntry = {};
-
-		var oModel = this.getView().getModel();
 
 		oEntry.Equnr = equipment;
 		oEntry.Vbeln = delivery;
@@ -105,9 +107,6 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			oDialog.close();
 			me._clearFlag = "X";
 
-			oModel.mEventRegistry.requestCompleted = [];
-			oModel.mEventRegistry.requestFailed = [];
-
 			var resp = oEvent.getParameter("response");
 			var rText = resp.responseText.replace(/[^{]*/i, '');
 			var t = rText.split("--");
@@ -115,18 +114,22 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			var jsonStr = JSON.parse(pt);
 
 			var oInput = {};
-			oInput.title = 'Scan Successful';
+			oInput.title = 'Scan Result';
 
 			oInput.text = jsonStr.d.Message;
 
-			if (jsonStr.d.Type === "E") {
+			if (jsonStr.d.Type === "E" || jsonStr.d.Type === " ") {
 				oInput.state = 'Error';
-			} else {
-			    me.clearAllInputs(me);
+			} else if (jsonStr.d.Type === "S") {
+				me.clearAllInputs(me);
 				oInput.state = 'Success';
 			}
-
+			else{
+			    return;
+			}
 			me.showSuccessDialog(oInput);
+			oModel.mEventRegistry.requestCompleted = [];
+			oModel.mEventRegistry.requestFailed = [];
 		});
 		oModel.attachRequestFailed(function() {
 			oDialog.close();
@@ -152,7 +155,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 		var oModel = this.getView().getModel();
 		//oModel.setHeaders["Content-Type"] = "application/json";
-		oModel.read("/DispatchSet(Equnr='" + equipment + "',Vbeln='" + delivery + "',Posnr='')", null, null, true);
+		oModel.read("/DispatchSet(Equnr='" + equipment + "',Vbeln='" + delivery + "',Posnr='',TagUid='')", null, null, true);
 
 		oModel.attachRequestSent(function() {
 			oDialog.open();
@@ -165,7 +168,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			//resp = oEvent.getParameter("response");
 			//var rText = resp.responseText;
 			//var jsonStr = JSON.parse(rText);
-			var d = oModel.getProperty("/DispatchSet(Equnr='',Vbeln='',Posnr='000000')");
+			var d = oModel.getProperty("/DispatchSet(TagUid='',Equnr='',Vbeln='',Posnr='000000')");
 			if (d.Type) {
 				var mType = d.Type;
 			}
@@ -186,6 +189,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			} else if (mType === "S") {
 				me.setTableBinding("X");
 			}
+			oModel.setRefreshAfterChange();
 			oModel.mEventRegistry.requestCompleted = [];
 			oModel.mEventRegistry.requestFailed = [];
 			//oEvent.preventDefault();
@@ -239,7 +243,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 				console.log("ClearInterval_Main");
 			}
 			//clearInterval(this._tagLookup);
-		}, 4000);
+		}, 500);
 	},
 
 	checkAndUpdateTag: function(me) {
@@ -256,11 +260,15 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 		var oModel = this.getView().getModel();
 		var oItemTemplate = this.byId("colListItems");
+		
+		oModel.read("/DispatchSet",{ filters: filters });
+		/*
 		oTable.bindAggregation("items", {
 			path: "/DispatchSet",
 			template: oItemTemplate,
 			filters: filters
 		});
+		*/
 		/*
 		oModel.read("/AssembleLoansetSet", {
 			filters: filters
@@ -277,7 +285,6 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			//sap.m.MessageToast.show("Tag Read Request Complete");
 			//clearInterval(meThis._tagLookup);
 			var resp = oEvent.getParameter("response");
-			//var rText = resp.responseText;
 			var rText = resp.responseText.replace(/[^{]*/i, '');
 			var t = rText.split("--");
 			var pt = t[0];
@@ -305,7 +312,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 				oInput.title = 'Scan Successful';
 				oInput.state = 'Success';
 				oInput.text = 'Proceed to Confirm!';
-				meThis.showSuccessDialog(oInput);
+				//meThis.showSuccessDialog(oInput);
 				console.log("ClearInterval");
 			}
 			//oModel.setData(jsonStr);
@@ -342,10 +349,12 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 		dialog.open();
 		setTimeout(function() {
-			dialog.close();
+		    if(dialog){
+		        dialog.close();
+		    }
 		}, 3000);
 		//this.getView().byId("buttonConfirm").setValueState("Success");
-		this.getView().byId("buttonConfirm").focus();
+		//this.getView().byId("buttonConfirm").focus();
 	},
 	getAllInput: function() {
 		this._equipmentInput = this.getView().byId("equipmentInput").getValue();
@@ -370,8 +379,62 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		//this.getView().byId("buttonConfirm").setValueState("None");
 	},
 
-	onIconPress: function(evt) {
-		sap.m.MessageToast.show("Icon Pressed");
+	onDetailPress: function(oEvent) {
+		//sap.m.MessageToast.show("Detail Pressed");
+
+		var me = this;
+
+		var oModel = this.getView().getModel();
+		var selectedPath = oEvent.getSource().getBindingContext().getPath();
+		var selectedData = oModel.getProperty(selectedPath);
+
+		var delivery = selectedData.Vbeln;
+		var equipment = selectedData.Equnr;
+		var delItem = selectedData.Posnr;
+		var device = this.getView().byId("deviceId").getValue();
+
+		var oFilter1 = new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.EQ, delivery);
+		var oFilter2 = new sap.ui.model.Filter("Posnr", sap.ui.model.FilterOperator.EQ, delItem);
+		var oFilter3 = new sap.ui.model.Filter("Equnr", sap.ui.model.FilterOperator.EQ, equipment);
+		var oFilter4 = new sap.ui.model.Filter("DevId", sap.ui.model.FilterOperator.EQ, device);
+		var filters = [oFilter1, oFilter2, oFilter3, oFilter4];
+
+		var dialog = new sap.m.Dialog({
+			title: 'Scan Status',
+			content: new sap.m.List("detailDialog", {
+				items: {
+					path: '/DispatchSet',
+					template: new sap.m.StandardListItem({
+						title: "{Matnr}",
+						description: "{Maktx}",
+						info: "{Charg}",
+						//infoState: "{ path: 'Type', formatter: 'myFormatter.getState' }",
+						icon: "{ path: 'Type', formatter: 'myFormatter.getIcon' }"
+					}),
+					filters: filters,
+					sorter: "Type"
+				}
+			}),
+			beginButton: new sap.m.Button({
+				text: 'Close',
+				press: function() {
+					dialog.close();
+				}
+			}),
+			afterClose: function() {
+				dialog.destroy();
+			}
+		});
+		//to get access to the global model
+		this.getView().addDependent(dialog);
+		dialog.open();
+
+		oModel.attachRequestSent(function() {
+			oModel.mEventRegistry.requestSent = [];
+		});
+		oModel.attachRequestCompleted(function() {
+			oModel.mEventRegistry.requestCompleted = [];
+		});
 	},
 
 	_onRoutePatternMatched: function(oEvent) {
