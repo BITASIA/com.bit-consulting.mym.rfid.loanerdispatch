@@ -20,6 +20,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 	_clearFlag: "",
 	_oDialog: null,
 	_oModel: null,
+	_onConfirmClicked: false,
 
 	onInit: function() {
 		this._oView = this.getView();
@@ -77,13 +78,9 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 	},
 
 	onConfirm: function() {
+
 		var me = this;
-        var oModel = this.getView().getModel();
-        
-        this._clearIntervalFlag = "X";
-		clearInterval(this._tagLookup);
-        //oModel.clearBatch();
-			
+		var oModel = this.getView().getModel();
 		var oDialog = this.getView().byId("BusyDialog");
 		var device = this.getView().byId("deviceId").getValue();
 		var delivery = this.getView().byId("deliveryInput").getValue();
@@ -94,46 +91,49 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		oEntry.Equnr = equipment;
 		oEntry.Vbeln = delivery;
 		oEntry.DevId = device;
-		//oEntry.JsonData = JSON.stringify(oModel.oData);
 
-		oModel.create("/DispatchSet", oEntry, null, null, null);
+		oDialog.open();
 
-		oModel.attachRequestSent(function() {
-			oDialog.open();
-			oModel.mEventRegistry.requestSent = [];
-		});
-
-		oModel.attachRequestCompleted(function(oEvent) {
-			oDialog.close();
-			me._clearFlag = "X";
-
-			var resp = oEvent.getParameter("response");
-			var rText = resp.responseText.replace(/[^{]*/i, '');
-			var t = rText.split("--");
-			var pt = t[0];
-			var jsonStr = JSON.parse(pt);
-
-			var oInput = {};
-			oInput.title = 'Scan Result';
-
-			oInput.text = jsonStr.d.Message;
-
-			if (jsonStr.d.Type === "E" || jsonStr.d.Type === " ") {
-				oInput.state = 'Error';
-			} else if (jsonStr.d.Type === "S") {
-				me.clearAllInputs(me);
-				oInput.state = 'Success';
+		oModel.create("/DispatchSet", oEntry, {
+			success: function(data) {
+				oDialog.close();
+				var oInput = {};
+				oInput.title = 'Scan Result';
+				oInput.text = data.Message;
+				if (data.Type === "E" || data.Type === " ") {
+					oInput.state = 'Error';
+				} else if (data.Type === "S") {
+					oInput.state = 'Success';
+					me.sendAsn(oEntry);
+					me.clearAllInputs(me);
+				}
+				me.showSuccessDialog(oInput);
+			},
+			error: function(error) {
+				oDialog.close();
+				sap.m.MessageToast.show("Error");
 			}
-			else{
-			    return;
-			}
-			me.showSuccessDialog(oInput);
-			oModel.mEventRegistry.requestCompleted = [];
-			oModel.mEventRegistry.requestFailed = [];
 		});
-		oModel.attachRequestFailed(function() {
-			oDialog.close();
-			oModel.mEventRegistry.requestFailed = [];
+	},
+
+	sendAsn: function(oEntry) {
+		var me = this;
+		var oInput = {};
+
+		oInput.Equnr = oEntry.Equnr;
+		oInput.Vbeln = oEntry.Vbeln;
+		var oModel = this.getView().getModel();
+		oModel.create("/AsnSet", oInput, {
+			success: function(data) {
+                if(data.Type === "S"){
+                    sap.m.MessageToast.show("ASN Sent");
+                } else if(data.Type === "E"){
+                    sap.m.MessageToast.show("ASN Failed");
+                }
+			},
+			error: function(error) {
+				sap.m.MessageToast.show("Error Sending ASN");
+			}
 		});
 	},
 
@@ -154,9 +154,38 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		var me = this;
 
 		var oModel = this.getView().getModel();
-		//oModel.setHeaders["Content-Type"] = "application/json";
-		oModel.read("/DispatchSet(Equnr='" + equipment + "',Vbeln='" + delivery + "',Posnr='',TagUid='')", null, null, true);
 
+		oDialog.open();
+
+		oModel.read("/DispatchSet(Equnr='" + equipment + "',Vbeln='" + delivery + "',Posnr='',TagUid='')", {
+			success: function(d) {
+				oDialog.close();
+				if (d.Type) {
+					var mType = d.Type;
+				}
+				if (d.Message) {
+					var message = d.Message;
+				}
+				if (mType === "E") {
+					oDialog.close();
+					if (me._inputType === "del") {
+						me.byId("deliveryInput").focus();
+						me.byId("deliveryInput").setValueState("Error");
+						me.byId("deliveryInput").setValueStateText(message);
+					} else if (me._inputType === "equ") {
+						me.byId("equipmentInput").focus();
+						me.byId("equipmentInput").setValueState("Error");
+						me.byId("equipmentInput").setValueStateText(message);
+					}
+				} else if (mType === "S") {
+					me.setTableBinding("X");
+				}
+			},
+			error: function(error) {
+				oDialog.close();
+			}
+		});
+		/*
 		oModel.attachRequestSent(function() {
 			oDialog.open();
 			oModel.mEventRegistry.requestSent = [];
@@ -189,7 +218,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			} else if (mType === "S") {
 				me.setTableBinding("X");
 			}
-			oModel.setRefreshAfterChange();
+			//oModel.setRefreshAfterChange();
 			oModel.mEventRegistry.requestCompleted = [];
 			oModel.mEventRegistry.requestFailed = [];
 			//oEvent.preventDefault();
@@ -198,6 +227,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			oDialog.close();
 			oModel.mEventRegistry.requestFailed = [];
 		});
+		*/
 	},
 
 	clearInputState: function() {
@@ -260,24 +290,46 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 		var oModel = this.getView().getModel();
 		var oItemTemplate = this.byId("colListItems");
-		
-		oModel.read("/DispatchSet",{ filters: filters });
-		/*
-		oTable.bindAggregation("items", {
-			path: "/DispatchSet",
-			template: oItemTemplate,
-			filters: filters
-		});
-		*/
-		/*
-		oModel.read("/AssembleLoansetSet", {
-			filters: filters
-		});
 
-		oModel.read("/AssemblyReadTagsSet", {
-			filters: filters
+		oModel.read("/DispatchSet", {
+			filters: filters,
+			success: function(jsonStr) {
+				var results = null;
+				if (jsonStr.results != null) {
+					results = jsonStr.results;
+				}
+				if (results == null) {
+					return;
+				}
+				var noErr = "X";
+				meThis._clearIntervalFlag = "";
+				for (var i = 0; i <= results.length; i++) {
+					if (results[i]) {
+						if (results[i].UidStatus === "E" ||
+							results[i].UidStatus === "W" ||
+							results[i].UidStatus === "") {
+							noErr = "";
+						}
+					} else {
+						break;
+					}
+				}
+				if (noErr === "X" && results.length !== 0) {
+					meThis._clearIntervalFlag = "X";
+					clearInterval(meThis._tagLookup);
+					var oInput = {};
+					oInput.title = 'Scan Successful';
+					oInput.state = 'Success';
+					oInput.text = 'Proceed to Confirm!';
+					meThis.showSuccessDialog(oInput);
+					console.log("ClearInterval");
+				}
+			},
+			error: function() {
+
+			}
 		});
-		*/
+		/*
 		oModel.attachRequestSent(function() {
 			oModel.mEventRegistry.requestSent = [];
 		});
@@ -285,7 +337,9 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			//sap.m.MessageToast.show("Tag Read Request Complete");
 			//clearInterval(meThis._tagLookup);
 			var resp = oEvent.getParameter("response");
-			var rText = resp.responseText.replace(/[^{]*/i, '');
+	    */
+		//	var rText = resp.responseText.replace(/[^{]*/i, '');
+		/*
 			var t = rText.split("--");
 			var pt = t[0];
 			var jsonStr = JSON.parse(pt);
@@ -312,7 +366,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 				oInput.title = 'Scan Successful';
 				oInput.state = 'Success';
 				oInput.text = 'Proceed to Confirm!';
-				//meThis.showSuccessDialog(oInput);
+				meThis.showSuccessDialog(oInput);
 				console.log("ClearInterval");
 			}
 			//oModel.setData(jsonStr);
@@ -325,7 +379,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 			oModel.mEventRegistry.requestFailed = [];
 		});
-
+        */
 	},
 
 	showSuccessDialog: function(oInput) {
@@ -349,9 +403,9 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 		dialog.open();
 		setTimeout(function() {
-		    if(dialog){
-		        dialog.close();
-		    }
+			if (dialog !== null) {
+				dialog.close();
+			}
 		}, 3000);
 		//this.getView().byId("buttonConfirm").setValueState("Success");
 		//this.getView().byId("buttonConfirm").focus();
@@ -373,9 +427,12 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		this._deviceId = "";
 		this.getView().byId("equipmentInput").setValueState("None");
 		this.getView().byId("deliveryInput").setValueStateText("");
-
+		this.getView().byId("deliveryInput").focus();
 		//var oTable = this.getView().byId("itemTable");
 		this.setTableBinding("");
+		if (this._tagLookup !== null) {
+			clearInterval(this._tagLookup);
+		}
 		//this.getView().byId("buttonConfirm").setValueState("None");
 	},
 
@@ -428,13 +485,14 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		//to get access to the global model
 		this.getView().addDependent(dialog);
 		dialog.open();
-
+		/*
 		oModel.attachRequestSent(function() {
 			oModel.mEventRegistry.requestSent = [];
 		});
 		oModel.attachRequestCompleted(function() {
 			oModel.mEventRegistry.requestCompleted = [];
 		});
+		*/
 	},
 
 	_onRoutePatternMatched: function(oEvent) {

@@ -33,6 +33,6 @@
   },
   "deploy": {
     "destination": "XBA",
-    "name": "ZLSET_DISPATCH"
+    "name": "%2Fbitmym%2Fdisp"
   }
 }
