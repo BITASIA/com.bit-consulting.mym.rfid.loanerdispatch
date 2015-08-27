@@ -3,6 +3,7 @@ jQuery.sap.require("sap.ca.ui.model.type.Date");
 jQuery.sap.require("sap.ui.core.mvc.Controller");
 jQuery.sap.require("sap.ca.ui.model.format.AmountFormat");
 jQuery.sap.require("test05.view.Formatter");
+jQuery.sap.require("sap.m.MessageBox");
 
 sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 	_oItemTemplate: null,
@@ -21,6 +22,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 	_oDialog: null,
 	_oModel: null,
 	_onConfirmClicked: false,
+	_ws: null,
 
 	onInit: function() {
 		this._oView = this.getView();
@@ -30,6 +32,48 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 		this._oDialog = this.getView().byId("BusyDialog");
 		this._oModel = this.getView().getModel();
 		this.clearAllInputs(this);
+		this.initWebSocket();
+	},
+	
+	initWebSocket: function() {
+		if (this._ws !== null) {
+			return;
+		}
+		var self = this;
+		var wsUri = "ws://" + window.location.host + "/sap/bc/apc/sap/ztest/";
+		this._ws = new WebSocket(wsUri);
+
+		this._ws.onopen = function(evt) {
+			self.onOpen(evt);
+		};
+		this._ws.onclose = function(evt) {
+			self.onClose(evt);
+		};
+		this._ws.onmessage = function(evt) {
+			self.onMessage(evt);
+		};
+		this._ws.onerror = function(err) {
+			sap.m.MessageToast.show("Error: WebSocket Not Connected");
+		};
+	},
+
+	onOpen: function(evt) {
+		var device = this.getView().byId("deviceId").getValue();
+		this._ws.send(device);
+		console.log("WebSocket Opened");
+	},
+
+	onMessage: function(evt) {
+		if (evt.data === "YES") {
+			//Call Table Refresh
+			console.log("Reveived Data: " + evt.data);
+			this.lookupTags();
+		}
+	},
+
+	onClose: function() {
+		this._ws = null;
+		console.log("WebSocket Closed");
 	},
 
 	getStatusIcon: function(fval) {
@@ -75,6 +119,41 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 	onReRead: function() {
 		this.lookupTags();
 		//this.checkAndUpdateTag(this);
+	},
+	
+	onClearTags: function() {
+		this.showWarning();
+	},
+
+	removeTags: function() {
+		var me = this;
+		var oModel = this.getView().getModel();
+		var device = this.getView().byId("deviceId").getValue();
+		oModel.remove("/TempTagUIDSet(DevId='" + device + "')", {
+			success: function() {
+				me.lookupTags();
+			}
+		});
+	},
+
+	showWarning: function() {
+		var me = this;
+		var bCompact = !!this.getView().$().closest(".sapUiSizeCompact").length;
+
+		sap.m.MessageBox.show("Do you want to continue?", {
+			icon: sap.m.MessageBox.Icon.INFORMATION,
+			title: "Warning",
+			actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+			id: "messageBoxId1",
+			defaultAction: sap.m.MessageBox.Action.NO,
+			initialFocus: sap.m.MessageBox.Action.YES,
+			styleClass: bCompact ? "sapUiSizeCompact" : "",
+			onClose: function(oAction) {
+				if (oAction === sap.m.MessageBox.Action.YES) {
+					me.removeTags();
+				}
+			}
+		});
 	},
 
 	onConfirm: function() {
@@ -266,6 +345,8 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 
 	lookupTags: function() {
 		var me = this;
+		me.checkAndUpdateTag(me);
+		/*
 		this._tagLookup = setInterval(function() {
 			me.checkAndUpdateTag(me);
 			if (me._clearIntervalFlag === "X") {
@@ -274,6 +355,7 @@ sap.ui.core.mvc.Controller.extend("test05.view.Details", {
 			}
 			//clearInterval(this._tagLookup);
 		}, 500);
+		*/
 	},
 
 	checkAndUpdateTag: function(me) {

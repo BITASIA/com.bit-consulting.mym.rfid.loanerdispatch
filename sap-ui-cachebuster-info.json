@@ -18,11 +18,11 @@
   "test-resources/sap/ushell/renderers/fiorisandbox/Shell.controller.js": "1439955862039",
   "util/messages.js": "1439955861935",
   "view/BusyDialog.fragment.xml": "1440484553922",
-  "view/Details.controller.js": "1440561113823",
-  "view/Details.view.xml": "1440484553938",
+  "view/Details.controller.js": "1440674403662",
+  "view/Details.view.xml": "1440674117024",
   "view/Formatter.js": "1440485443085",
   "view/Main.controller.js": "1440484553952",
   "view/Main.view.xml": "1440484553956",
-  "view/Master.controller.js": "1440484553963",
+  "view/Master.controller.js": "1440643278474",
   "view/Master.view.xml": "1440484553969"
 }
