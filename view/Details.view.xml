@@ -32,7 +32,7 @@
 							<Input change=".onEquipmentInputChange" class="mymTagInput" id="equipmentInput" placeholder="Equipment ..." type="Text"></Input>
 						</l:content>
 						<l:HorizontalLayout>
-							<Button icon="sap-icon://decision" id="buttonConfirm" press="onConfirm" text="Confirm" enabled="false"/>
+							<Button icon="sap-icon://decision" id="buttonConfirm" press="onConfirm" text="Confirm"/>
 							<ToolbarSpacer width="14px"/>
 							<Button icon="sap-icon://feed" press="onReRead" text="Read Tags"/>
 							<ToolbarSpacer width="14px"/>
